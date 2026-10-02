@@ -57,7 +57,7 @@ export async function POST(req) {
         if (lead.email && resendKey) {
           const resend = new Resend(resendKey);
           await resend.emails.send({
-            from: `Founder CRM <${fromEmail}>`,
+            from: `Adscaleengine <${fromEmail}>`,
             to: [lead.email],
             subject: `Re: Our connection`,
             text: personalizedMsg

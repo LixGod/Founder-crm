@@ -38,7 +38,7 @@ export async function POST(req) {
           const fromEmail = config.from_email || 'onboarding@resend.dev';
           const resend = new Resend(resendKey);
           await resend.emails.send({
-            from: `Founder CRM <${fromEmail}>`,
+            from: `Adscaleengine <${fromEmail}>`,
             to: [lead.email],
             subject: `Connection Request — ${lead.name}`,
             text: personalizedMsg

@@ -16,11 +16,11 @@ export async function POST(req) {
       whatsapp_phone_number_id: whatsappPhoneId || null,
     };
 
-    if (resendKey) updateData.resend_key_encrypted = encrypt(resendKey);
-    if (fromEmail) updateData.from_email = fromEmail;
-    if (whatsappToken) updateData.whatsapp_token_encrypted = encrypt(whatsappToken);
-    if (groqKey) updateData.groq_key_encrypted = encrypt(groqKey);
-    if (linkedinToken) updateData.linkedin_token_encrypted = encrypt(linkedinToken);
+    if (resendKey) updateData.resend_key_encrypted = encrypt(resendKey.trim());
+    if (fromEmail) updateData.from_email = fromEmail.trim();
+    if (whatsappToken) updateData.whatsapp_token_encrypted = encrypt(whatsappToken.trim());
+    if (groqKey) updateData.groq_key_encrypted = encrypt(groqKey.trim());
+    if (linkedinToken) updateData.linkedin_token_encrypted = encrypt(linkedinToken.trim());
 
     const { error } = await supabase.from('user_configs').upsert(updateData, { onConflict: 'user_id' });
 

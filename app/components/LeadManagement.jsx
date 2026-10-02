@@ -127,6 +127,22 @@ const LeadManagement = () => {
     else alert('Error deleting: ' + error.message);
   };
 
+  const deleteSelectedLeads = async () => {
+    if (selectedLeads.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedLeads.length} leads?`)) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.from('leads').delete().in('id', selectedLeads);
+      if (error) throw error;
+      setLeads(leads.filter(l => !selectedLeads.includes(l.id)));
+      setSelectedLeads([]);
+    } catch (err) {
+      alert('Error deleting: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEdit = (lead) => {
     setEditingLead(lead);
     setIsEditModalOpen(true);
@@ -137,6 +153,14 @@ const LeadManagement = () => {
     l.company?.toLowerCase().includes(search.toLowerCase()) ||
     l.email?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleSelectAll = () => {
+    if (selectedLeads.length === filteredLeads.length && filteredLeads.length > 0) {
+      setSelectedLeads([]);
+    } else {
+      setSelectedLeads(filteredLeads.map(l => l.id));
+    }
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -208,6 +232,10 @@ const LeadManagement = () => {
         </div>
         
         <div className="flex gap-4 items-center">
+          <button onClick={handleSelectAll}
+            className={`text-sm font-bold flex items-center gap-2 px-4 py-3 rounded-2xl transition-all border ${selectedLeads.length > 0 && selectedLeads.length === filteredLeads.length ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400'}`}>
+            {selectedLeads.length > 0 && selectedLeads.length === filteredLeads.length ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />} Select All
+          </button>
           <label className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 text-sm font-bold px-6 py-3 rounded-2xl flex items-center gap-2 transition-all cursor-pointer shadow-sm">
             <Plus className="w-4 h-4" /> Import CSV
             <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
@@ -242,6 +270,9 @@ const LeadManagement = () => {
             {selectedLeads.length} Leads Selected
           </div>
           <div className="flex items-center gap-3">
+            <button onClick={deleteSelectedLeads} className="bg-rose-100 text-rose-600 hover:bg-rose-200 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors">
+              <Trash2 className="w-4 h-4" /> Delete
+            </button>
             <button onClick={() => setSelectedLeads([])} className="text-sm font-bold text-slate-400 hover:text-slate-600 px-4">Cancel</button>
             <div className="relative">
               <button onClick={() => setShowCampaignPicker(!showCampaignPicker)}

@@ -32,7 +32,7 @@ export async function POST(req) {
 
       const resend = new Resend(resendKey);
       const { data, error } = await resend.emails.send({
-        from: `Founder CRM <${fromEmail}>`,
+        from: `Adscaleengine <${fromEmail}>`,
         to: [lead.email],
         subject: `Following up — ${lead.company || 'your team'}`,
         text: content,
